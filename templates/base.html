@@ -166,6 +166,7 @@
             color: #ffff;
             padding: 10px;
             font-size: 1em;
+            width: calc(100% - 60px); /* Adjusted for send button */
         }
 
         #send-message {
@@ -173,7 +174,6 @@
             color: white;
             border: none;
             padding: 10px;
-            border-radius: 0;
             font-weight: bold;
             cursor: pointer;
             transition: background 0.3s;
@@ -212,15 +212,20 @@
 
     <!-- Chatbot -->
     <div id="chatbot">
-        <button id="chat-button">Chat with me!</button>
+        <button id="chat-button" aria-label="Open chat window">Chat with me!</button>
         <div id="chat-window">
             <div id="chat-header">
                 Ask Me Anything!
-                <button id="close-chat" style="background: none; border: none; color: white; font-weight: bold;">✖</button>
+                <button id="close-chat" aria-label="Close chat window" style="background: none; border: none; color: white; font-weight: bold;">✖</button>
             </div>
             <div id="chat-messages"></div>
-            <input type="text" id="chat-input" placeholder="Type your question..." />
-            <button id="send-message">Send</button>
+            <div id="loading-spinner" class="hidden">
+                <div class="spinner"></div>
+            </div>
+            <div style="display: flex;">
+                <input type="text" id="chat-input" placeholder="Type your question...">
+                <button id="send-message">Send</button>
+            </div>
         </div>
     </div>
 
@@ -231,29 +236,66 @@
         const sendMessage = document.getElementById('send-message');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
+        const loadingSpinner = document.getElementById("loading-spinner");
 
-        chatButton.addEventListener('click', () => chatWindow.classList.toggle('open'));
-        closeChat.addEventListener('click', () => chatWindow.classList.remove('open'));
+        // Function to show the spinner
+        function showSpinner() {
+            loadingSpinner.classList.remove("hidden");
+        }
 
-        sendMessage.addEventListener('click', async () => {
-            const message = chatInput.value.trim();
-            if (message) {
-                const userMessage = document.createElement('div');
-                userMessage.textContent = `You: ${message}`;
-                chatMessages.appendChild(userMessage);
+        // Function to hide the spinner
+        function hideSpinner() {
+            loadingSpinner.classList.add("hidden");
+        }
 
-                // Send message to backend
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message }),
+        // Open and close chat window
+        chatButton.addEventListener('click', () => {
+            chatWindow.classList.toggle('open');
+        });
+        closeChat.addEventListener('click', () => {
+            chatWindow.classList.remove('open');
+        });
+
+        // Send message on Enter key
+        chatInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage.click();
+            }
+        });
+
+        // Handle send message
+        sendMessage.addEventListener("click", async function () {
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+
+            // Display the user's message
+            const userMessageElement = document.createElement("div");
+            userMessageElement.textContent = `You: ${userMessage}`;
+            chatMessages.appendChild(userMessageElement);
+
+            chatInput.value = "";
+
+            // Show the loading spinner
+            showSpinner();
+
+            try {
+                const response = await fetch("/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage }),
                 });
-                const data = await response.json();
-                const botMessage = document.createElement('div');
-                botMessage.textContent = `Bot: ${data.reply}`;
-                chatMessages.appendChild(botMessage);
 
-                chatInput.value = '';
+                const data = await response.json();
+
+                // Display the bot's response
+                const botMessageElement = document.createElement("div");
+                botMessageElement.textContent = `Bot: ${data.reply}`;
+                chatMessages.appendChild(botMessageElement);
+            } catch (error) {
+                console.error("Error:", error);
+            } finally {
+                hideSpinner();
             }
         });
     </script>
