@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}CV{% endblock %}
+
+{% block content %}
+<h1>Curriculum Vitae</h1> 
+<p>You can view or download my CV here:</p>
+<a href="{{ url_for('download_cv') }}" class="button">Download CV</a>
+{% endblock %}
