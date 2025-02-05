@@ -45,7 +45,7 @@ if tokenizer.pad_token is None:
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
     model.resize_token_embeddings(len(tokenizer))
 
-with open(r"C:\Users\benga\workspaces\github.com\bg_web\train\ben.json", "r") as file:
+with open(r"C:\Users\benga\workspaces\github.com\bengawith\bg_web\train\ben.json", "r") as file:
     benjamin_data = json.load(file)
 
 def generate_context(user_message):
