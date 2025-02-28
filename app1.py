@@ -91,12 +91,19 @@ def project_files(repo_name, sub_path=""):
     """Fetch files and directories inside a repository, supporting nested structures."""
     github_api_url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{repo_name}/contents/{sub_path}"
     response = requests.get(github_api_url)
-    files = response.json() if response.status_code == 200 else []
+
+    if response.status_code != 200:
+        print(f"GitHub API Error ({response.status_code}): {response.text}")
+        return f"Error fetching files for {repo_name} at path {sub_path}", 500
+
+    files = response.json() if isinstance(response.json(), list) else []
+
+    print(f"Fetched files from {repo_name}/{sub_path}: {files}")
 
     # Generate breadcrumb links
     breadcrumb_parts = sub_path.split('/') if sub_path else []
     breadcrumbs = [{'name': 'Home', 'path': url_for('projects')}]
-    
+
     path_accum = ""
     for part in breadcrumb_parts:
         path_accum += f"{part}/"

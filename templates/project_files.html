@@ -18,10 +18,7 @@
     {% for file in files %}
         <li>
             {% if file.type == "dir" %}
-                <details class="folder">
-                    <summary data-path="{{ file.path }}">📂 <strong>{{ file.name }}</strong></summary>
-                    <ul class="nested-files"></ul>
-                </details>
+                📂 <a href="{{ url_for('project_files', repo_name=repo_name, sub_path=file.path) }}">{{ file.name }}</a>
             {% else %}
                 📄 <a href="{{ url_for('view_file', repo_name=repo_name, file_path=file.path) }}">{{ file.name }}</a>
             {% endif %}
@@ -38,16 +35,6 @@
     .file-tree li {
         padding: 5px;
         font-size: 1.1rem;
-    }
-
-    .file-tree details {
-        margin-bottom: 8px;
-    }
-
-    .file-tree summary {
-        cursor: pointer;
-        font-weight: bold;
-        color: #8e2de2;
     }
 
     .file-tree a {
@@ -76,30 +63,5 @@
         text-decoration: underline;
     }
 </style>
-
-<script>
-    document.querySelectorAll(".folder summary").forEach(folder => {
-        folder.addEventListener("click", async function (event) {
-            event.preventDefault(); // Prevents default expand behavior
-            
-            const folderPath = this.dataset.path;
-            const nestedList = this.nextElementSibling;
-
-            // If files are already loaded, just toggle visibility
-            if (nestedList.innerHTML.trim() !== "") {
-                nestedList.classList.toggle("hidden");
-                return;
-            }
-
-            // Fetch files dynamically
-            const response = await fetch(`/project/{{ repo_name }}/${folderPath}`);
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(await response.text(), "text/html");
-            const newFiles = doc.querySelector(".file-tree").innerHTML;
-
-            nestedList.innerHTML = newFiles; // Inject new files into the folder
-        });
-    });
-</script>
 
 {% endblock %}

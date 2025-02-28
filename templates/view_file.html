@@ -3,9 +3,26 @@
 {% block title %}Viewing {{ file.name }}{% endblock %}
 
 {% block content %}
-<h1>File: {{ file.name }}</h1>
+<h1>{{ file.name }}</h1>
 
-<pre><code class="language-{{ file.name.split('.')[-1] }}">{{ file.content }}</code></pre>
+<!-- Breadcrumb Navigation -->
+<nav class="breadcrumb">
+    <a href="{{ url_for('projects') }}">Home</a> > 
+    <a href="{{ url_for('project_files', repo_name=repo_name) }}">{{ repo_name }}</a>
+    {% set path_parts = file.path.split('/') %}
+    {% set path_accum = "" %}
+    {% for part in path_parts[:-1] %}
+        {% set path_accum = path_accum + part + '/' %}
+        > <a href="{{ url_for('project_files', repo_name=repo_name, sub_path=path_accum.rstrip('/')) }}">{{ part }}</a>
+    {% endfor %}
+    > {{ file.name }}
+</nav>
+
+<!-- Copy Button -->
+<button id="copy-btn">📋 Copy Code</button>
+
+<!-- Code Block -->
+<pre><code id="code-block" class="language-{{ file.name.split('.')[-1] }}">{{ file.content }}</code></pre>
 
 <!-- Prism.js for Syntax Highlighting -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -14,6 +31,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+<script>
+    document.getElementById("copy-btn").addEventListener("click", function () {
+        navigator.clipboard.writeText(document.getElementById("code-block").innerText);
+        alert("Code copied!");
+    });
+
+    // Ensure Prism.js applies highlighting
+    document.addEventListener("DOMContentLoaded", function() {
+        Prism.highlightAll();
+    });
+</script>
 
 <style>
     pre {
@@ -21,9 +53,40 @@
         padding: 15px;
         border-radius: 5px;
         overflow-x: auto;
-    }
-    code {
         font-size: 1rem;
+    }
+
+    code {
+        font-family: "Courier New", monospace;
+    }
+
+    .breadcrumb {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+    }
+
+    .breadcrumb a {
+        text-decoration: none;
+        color: #4a00e0;
+        font-weight: bold;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    #copy-btn {
+        background: #8e2de2;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    #copy-btn:hover {
+        background: #4a00e0;
     }
 </style>
 
