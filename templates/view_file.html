@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Viewing {{ file.name }}{% endblock %}
+
+{% block content %}
+<h1>File: {{ file.name }}</h1>
+
+<pre><code class="language-{{ file.name.split('.')[-1] }}">{{ file.content }}</code></pre>
+
+<!-- Prism.js for Syntax Highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+<style>
+    pre {
+        background: #1e1e1e;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+    code {
+        font-size: 1rem;
+    }
+</style>
+
+{% endblock %}

@@ -3,7 +3,94 @@
 {% block title %}CV{% endblock %}
 
 {% block content %}
-<h1>Curriculum Vitae</h1> 
+<h1>Curriculum Vitae</h1>
 <p>You can view or download my CV here:</p>
-<a href="{{ url_for('download_cv') }}" class="button">Download CV</a>
+
+<!-- CV View Container -->
+<div class="cv-container">
+    <iframe id="cv-frame" src="{{ url_for('view_cv') }}" class="cv-frame"></iframe>
+    <div id="resize-handle"></div>
+</div>
+
+<!-- CV Download Button -->
+<a href="{{ url_for('download_cv') }}" class="cv-button">📄 Download CV</a>
+
+<style>
+    .cv-container {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        min-width: 300px;
+        height: 500px;
+        min-height: 300px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        resize: both;
+    }
+
+    .cv-frame {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    /* Resize Handle */
+    #resize-handle {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        background: #4a00e0;
+        border-radius: 50%;
+        cursor: nwse-resize;
+    }
+
+    .cv-button {
+        display: inline-block;
+        background: linear-gradient(to right, #4a00e0, #8e2de2);
+        color: white;
+        padding: 12px 20px;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s;
+        margin-top: 20px;
+    }
+
+    .cv-button:hover {
+        background: linear-gradient(to right, #8e2de2, #4a00e0);
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<script>
+    const cvContainer = document.querySelector(".cv-container");
+    const resizeHandle = document.getElementById("resize-handle");
+    
+    let isResizing = false;
+    
+    resizeHandle.addEventListener("mousedown", function (e) {
+        isResizing = true;
+        document.addEventListener("mousemove", resize);
+        document.addEventListener("mouseup", stopResize);
+    });
+
+    function resize(e) {
+        if (isResizing) {
+            cvContainer.style.width = e.clientX - cvContainer.offsetLeft + "px";
+            cvContainer.style.height = e.clientY - cvContainer.offsetTop + "px";
+        }
+    }
+
+    function stopResize() {
+        isResizing = false;
+        document.removeEventListener("mousemove", resize);
+        document.removeEventListener("mouseup", stopResize);
+    }
+</script>
+
 {% endblock %}

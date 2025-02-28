@@ -100,16 +100,20 @@
         /* Chatbot Styling */
         #chatbot {
             position: fixed;
-            bottom: 35px;
+            bottom: 20px;
             right: 40px;
             z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
         }
 
+        /* Chat Button */
         #chat-button {
             background: linear-gradient(to right, #4a00e0, #8e2de2);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 50px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             cursor: pointer;
@@ -122,8 +126,9 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
+        /* Chat Window */
         #chat-window {
-            display: flex;
+            display: none;
             flex-direction: column;
             background: white;
             width: 300px;
@@ -131,15 +136,22 @@
             border-radius: 16px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             overflow: hidden;
+            position: absolute;
+            bottom: 60px; /* Now above the chat button */
+            right: 0;
+            transition: transform 0.3s ease-in-out, opacity 0.3s;
             transform: scale(0);
+            opacity: 0;
             transform-origin: bottom right;
-            transition: transform 0.3s ease;
         }
 
         #chat-window.open {
+            display: flex;
             transform: scale(1);
+            opacity: 1;
         }
 
+        /* Chat Header */
         #chat-header {
             background: linear-gradient(to right, #4a00e0, #8e2de2);
             color: white;
@@ -151,37 +163,39 @@
             align-items: center;
         }
 
+        /* Chat Messages */
         #chat-messages {
             flex: 1;
             padding: 10px;
             overflow-y: auto;
             scrollbar-color: #3c3c3c;
-            background: linear-gradient(to bottom, rgb(75, 75, 75), rgb(25, 25, 25));
-            color: #ffff;
+            background: #2c2c2c;
+            color: white;
         }
 
+        /* Chat Input */
         #chat-input {
-            border: #2c2c2c;
+            border: none;
             background: #2c2c2c;
-            color: #ffff;
+            color: white;
             padding: 10px;
             font-size: 1em;
-            width: calc(100% - 60px); /* Adjusted for send button */
+            width: calc(100% - 60px);
         }
 
+        /* Send Message Button */
         #send-message {
             background: linear-gradient(to right, #4a00e0, #8e2de2);
             color: white;
             border: none;
             padding: 10px;
-            font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
         }
 
         #send-message:hover {
             background: linear-gradient(to right, #8e2de2, #4a00e0);
         }
+
     </style>
 </head>
 <body>
